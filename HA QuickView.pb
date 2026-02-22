@@ -13,6 +13,9 @@ Enumeration
   #Win_Settings
   #Web_Settings
   #Win_Config
+  #Txt_ConfigHeader
+  #Txt_ConfigInfo
+  #Frm_ConfigConnection
   #Txt_ConfigBase
   #Str_ConfigBase
   #Txt_ConfigToken
@@ -696,13 +699,94 @@ EndProcedure
 
 ; --- Persistence ---
 
+Procedure.i EnsureDirectoryTree(Path.s)
+  Protected Work.s = Trim(Path)
+  Protected Current.s = ""
+  Protected Part.s = ""
+  Protected i.i, Count.i
+  Protected Sep.s = #PS$
+  
+  If Work = ""
+    ProcedureReturn #False
+  EndIf
+  
+  Work = ReplaceString(Work, #NPS$, Sep)
+  
+  CompilerIf #PB_Compiler_OS = #PB_OS_Windows
+    ; Laufwerkspräfix (z. B. C:) erhalten
+    If Len(Work) >= 2 And Mid(Work, 2, 1) = ":"
+      Current = Left(Work, 2)
+      Work = Mid(Work, 3)
+    EndIf
+  CompilerEndIf
+  
+  If Left(Work, 1) = Sep
+    Current = Sep
+    While Left(Work, 1) = Sep
+      Work = Mid(Work, 2)
+    Wend
+  EndIf
+  
+  Count = CountString(Work, Sep) + 1
+  For i = 1 To Count
+    Part = StringField(Work, i, Sep)
+    If Part = "" : Continue : EndIf
+    
+    If Current = "" Or Right(Current, 1) = Sep
+      Current + Part
+    Else
+      Current + Sep + Part
+    EndIf
+    CreateDirectory(Current)
+  Next
+  
+  If FileSize(Path) = -2
+    ProcedureReturn #True
+  EndIf
+  
+  ProcedureReturn #False
+EndProcedure
+
 Procedure.s GetConfigFilePath()
-  Protected BaseDir.s = GetHomeDirectory() + "Library/Application Support/"
-  Protected AppDir.s = BaseDir + "HA QuickView/"
+  Protected BaseDir.s = ""
+  Protected AppDir.s = ""
+  Protected EnvDir.s = ""
+  
+  CompilerSelect #PB_Compiler_OS
+    CompilerCase #PB_OS_MacOS
+      ; macOS: ~/Library/Application Support/HA QuickView/
+      BaseDir = GetHomeDirectory() + "Library/Application Support/"
+      
+    CompilerCase #PB_OS_Windows
+      ; Windows: %APPDATA%\HA QuickView\
+      EnvDir = Trim(GetEnvironmentVariable("APPDATA"))
+      If EnvDir = ""
+        EnvDir = GetHomeDirectory() + "AppData" + #PS$ + "Roaming"
+      EndIf
+      If Right(EnvDir, 1) <> #PS$ And Right(EnvDir, 1) <> #NPS$
+        EnvDir + #PS$
+      EndIf
+      BaseDir = EnvDir
+      
+    CompilerDefault
+      ; Linux/Unix: $XDG_CONFIG_HOME/HA QuickView/ oder ~/.config/HA QuickView/
+      EnvDir = Trim(GetEnvironmentVariable("XDG_CONFIG_HOME"))
+      If EnvDir <> ""
+        BaseDir = EnvDir
+      Else
+        BaseDir = GetHomeDirectory() + ".config"
+      EndIf
+      If Right(BaseDir, 1) <> #PS$ And Right(BaseDir, 1) <> #NPS$
+        BaseDir + #PS$
+      EndIf
+  CompilerEndSelect
+  
+  BaseDir = ReplaceString(BaseDir, #NPS$, #PS$)
+  AppDir = BaseDir + "HA QuickView" + #PS$
   
   ; Verzeichnisstruktur anlegen (benutzerabhängig, getrennt von der App)
-  CreateDirectory(BaseDir)
-  CreateDirectory(AppDir)
+  EnsureDirectoryTree(BaseDir)
+  EnsureDirectoryTree(AppDir)
   
   If #Demo
     ; Demo nutzt eigene Datei, damit Live-Konfiguration unberührt bleibt
@@ -763,18 +847,31 @@ Procedure.i EnsureConnectionConfig()
   EndIf
   Protected UrlVal.s, TokenVal.s
   Protected Saved.i = #False
+  Protected WinW.i = 760
+  Protected WinH.i = 300
+  Protected Margin.i = 24
   
   If Trim(HA_BASE_URL) <> "" And Trim(HA_TOKEN) <> ""
     ProcedureReturn #True
   EndIf
   
-  If OpenWindow(#Win_Config, 0, 0, 680, 250, "HA QuickView - Verbindung", #PB_Window_SystemMenu | #PB_Window_WindowCentered)
-    TextGadget(#Txt_ConfigBase, 20, 20, 640, 20, "Home Assistant URL (z. B. http://192.168.178.35:8123)")
-    StringGadget(#Str_ConfigBase, 20, 44, 640, 28, HA_BASE_URL)
-    TextGadget(#Txt_ConfigToken, 20, 86, 640, 20, "Long-Lived Access Token")
-    StringGadget(#Str_ConfigToken, 20, 110, 640, 28, HA_TOKEN)
-    ButtonGadget(#Btn_ConfigCancel, 430, 170, 110, 34, "Abbrechen")
-    ButtonGadget(#Btn_ConfigSave, 550, 170, 110, 34, "Speichern")
+  If OpenWindow(#Win_Config, 0, 0, WinW, WinH, "HA QuickView - Verbindung einrichten", #PB_Window_SystemMenu | #PB_Window_ScreenCentered)
+    TextGadget(#Txt_ConfigHeader, Margin, 16, WinW - Margin * 2, 26, "Home Assistant verbinden")
+    TextGadget(#Txt_ConfigInfo, Margin, 44, WinW - Margin * 2, 22, "Bitte URL und Long-Lived Access Token eingeben.")
+    FrameGadget(#Frm_ConfigConnection, Margin - 4, 74, WinW - (Margin - 4) * 2, 166, "Verbindungsdaten")
+    
+    TextGadget(#Txt_ConfigBase, Margin + 12, 102, WinW - (Margin + 12) * 2, 20, "Home Assistant URL (z. B. http://homeassistant.local:8123)")
+    StringGadget(#Str_ConfigBase, Margin + 12, 124, WinW - (Margin + 12) * 2, 30, HA_BASE_URL)
+    TextGadget(#Txt_ConfigToken, Margin + 12, 164, WinW - (Margin + 12) * 2, 20, "Long-Lived Access Token")
+    StringGadget(#Str_ConfigToken, Margin + 12, 186, WinW - (Margin + 12) * 2, 30, HA_TOKEN)
+    
+    ButtonGadget(#Btn_ConfigSave, WinW - 250, WinH - 52, 110, 34, "Speichern", #PB_Button_Default)
+    ButtonGadget(#Btn_ConfigCancel, WinW - 128, WinH - 52, 110, 34, "Abbrechen")
+    
+    If Trim(HA_BASE_URL) = ""
+      SetGadgetText(#Str_ConfigBase, "http://homeassistant.local:8123")
+    EndIf
+    SetActiveGadget(#Str_ConfigBase)
     
     Repeat
       Event = WaitWindowEvent()
@@ -785,14 +882,22 @@ Procedure.i EnsureConnectionConfig()
         If Gad = #Btn_ConfigSave
           UrlVal = Trim(GetGadgetText(#Str_ConfigBase))
           TokenVal = Trim(GetGadgetText(#Str_ConfigToken))
+          If Right(UrlVal, 1) = "/"
+            UrlVal = Left(UrlVal, Len(UrlVal) - 1)
+          EndIf
+          
           If UrlVal <> "" And TokenVal <> ""
+            If Left(LCase(UrlVal), 7) <> "http://" And Left(LCase(UrlVal), 8) <> "https://"
+              MessageRequester("Ungültige URL", "Bitte die URL mit http:// oder https:// angeben.", #PB_MessageRequester_Warning)
+              Continue
+            EndIf
             HA_BASE_URL = UrlVal
             HA_TOKEN = TokenVal
             SaveConfig()
             Saved = #True
             Break
           Else
-            MessageRequester("Fehlende Angaben", "Bitte HA_BASE_URL und HA_TOKEN eingeben.", #PB_MessageRequester_Warning)
+            MessageRequester("Fehlende Angaben", "Bitte URL und Access Token eingeben.", #PB_MessageRequester_Warning)
           EndIf
         ElseIf Gad = #Btn_ConfigCancel
           Break
@@ -1381,8 +1486,9 @@ Until Event = #PB_Event_CloseWindow And Window = #Win_Main
 
 End
 ; IDE Options = PureBasic 6.30 - C Backend (MacOS X - arm64)
-; CursorPosition = 41
-; Folding = qf0----
+; CursorPosition = 736
+; FirstLine = 153
+; Folding = LBA-----
 ; EnableThread
 ; EnableXP
 ; DPIAware
