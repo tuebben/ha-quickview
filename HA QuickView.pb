@@ -1381,7 +1381,7 @@ Until Event = #PB_Event_CloseWindow And Window = #Win_Main
 
 End
 ; IDE Options = PureBasic 6.30 - C Backend (MacOS X - arm64)
-; CursorPosition = 39
+; CursorPosition = 41
 ; Folding = qf0----
 ; EnableThread
 ; EnableXP

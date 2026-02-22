@@ -177,6 +177,40 @@
       align-items: center;
     }
 
+    .shots {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 10px;
+    }
+
+    .shot {
+      margin: 0;
+      border-radius: 12px;
+      background: transparent;
+      overflow: hidden;
+      box-shadow: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .shot img {
+      display: block;
+      width: auto;
+      max-width: none;
+      height: auto;
+      aspect-ratio: auto;
+      object-fit: fill;
+      background: transparent;
+    }
+
+    .shot figcaption {
+      padding: 8px 0 0;
+      font-size: .9rem;
+      color: var(--ink-soft);
+    }
+
     .hint {
       margin: 0;
       font-size: .92rem;
@@ -232,6 +266,10 @@
         grid-template-columns: 1fr;
         gap: 2px;
       }
+
+      .shots {
+        gap: 14px;
+      }
     }
   </style>
 </head>
@@ -240,10 +278,11 @@
     <header class="hero">
       <h1>HA QuickView</h1>
       <p class="subtitle">
-        Eine kompakte Weboberflaeche fuer deine App. Alles auf einer Seite: Kurzdoku, Download und Impressum.
+        Dein schneller Überblick über Home Assistant auf dem Desktop.
       </p>
       <nav class="nav" aria-label="Hauptnavigation">
         <a class="btn" href="#dokumentation">Dokumentation</a>
+        <a class="btn" href="#screenshots">Screenshots</a>
         <a class="btn primary" href="#download">Download</a>
         <a class="btn" href="#impressum">Impressum</a>
       </nav>
@@ -253,14 +292,15 @@
       <section id="dokumentation">
         <h2>Dokumentation</h2>
         <p>
-          HA QuickView zeigt deine Home-Assistant-Bereiche in einer schnellen Kartenansicht. Sensoren, Schalter und Lichter
-          werden direkt dargestellt. Im Design-Modus kannst du die Reihenfolge anpassen und sichtbare Entitaeten verwalten.
+          HA QuickView zeigt dir deine Home-Assistant-Räume in einer aufgeräumten Kartenansicht. Du siehst Temperatur und
+          Luftfeuchte direkt pro Bereich und kannst Schalter sowie Lichter sofort bedienen. Im Design-Modus legst du fest,
+          was sichtbar ist und in welcher Reihenfolge es erscheint.
         </p>
         <ol class="steps">
-          <li>App starten und Verbindung zu Home Assistant herstellen.</li>
+          <li>App starten und mit deiner Home-Assistant-Instanz verbinden.</li>
           <li>Mit <code>Design</code> in den Layout-Modus wechseln.</li>
-          <li>Bereiche und Entitaeten per Drag-and-Drop sortieren.</li>
-          <li>Sichtbarkeit je Bereich aktivieren oder ausblenden.</li>
+          <li>Räume per Drag-and-Drop so sortieren, wie du sie brauchst.</li>
+          <li>Entitäten auswählen, umsortieren oder ausblenden.</li>
           <li>Mit <code>Fertig</code> speichern und normale Ansicht nutzen.</li>
         </ol>
       </section>
@@ -268,26 +308,46 @@
       <section id="download">
         <h2>Download</h2>
         <p>
-          Lade hier die aktuelle Datei herunter und stelle sie auf deiner Domain bereit.
+          Alle veröffentlichten Versionen findest du auf GitHub.
         </p>
         <div class="download-box">
-          <a class="btn primary" href="./QHA.pb" download>App herunterladen</a>
-          <p class="hint">Datei: <code>QHA.pb</code></p>
+          <a class="btn primary" href="https://github.com/tuebben/ha-quickview/releases" target="_blank" rel="noopener noreferrer">Zu den Releases</a>
+          <p class="hint">Quelle: <code>github.com/tuebben/ha-quickview/releases</code></p>
+        </div>
+      </section>
+
+      <section id="screenshots">
+        <h2>Screenshots</h2>
+        <p>Ein kurzer Eindruck der aktuellen Oberfläche.</p>
+        <div class="shots">
+          <figure class="shot">
+            <img src="./screenshot1.png" alt="HA QuickView Screenshot 1" loading="lazy">
+            <figcaption>Hauptansicht mit Bereichen, Sensoren und Schaltern.</figcaption>
+          </figure>
+
+          <figure class="shot">
+            <img src="./screenshot2.png" alt="HA QuickView Screenshot 2" loading="lazy">
+            <figcaption>Design-Modus zum Sortieren und Anpassen der Sichtbarkeit.</figcaption>
+          </figure>
+
+          <figure class="shot">
+            <img src="./screenshot3.png" alt="HA QuickView Screenshot 3" loading="lazy">
+            <figcaption>Einstellungsansicht zur Auswahl sichtbarer Entitäten.</figcaption>
+          </figure>
         </div>
       </section>
 
       <section id="impressum">
         <h2>Impressum</h2>
-        <p>Bitte ersetze die Platzhalter mit deinen echten Angaben, bevor du die Seite veroeffentlichst.</p>
         <dl class="impressum-data">
           <dt>Name</dt>
-          <dd>Max Mustermann</dd>
+          <dd>Peter Tübben</dd>
           <dt>Adresse</dt>
-          <dd>Musterstrasse 1, 12345 Musterstadt, Deutschland</dd>
+          <dd>Iltisweg 9, 26209 Hatten, Deutschland</dd>
           <dt>E-Mail</dt>
-          <dd>kontakt@deinedomain.de</dd>
+          <dd>tuebben@gmail.com</dd>
           <dt>Verantwortlich</dt>
-          <dd>Max Mustermann</dd>
+          <dd>Peter Tübben</dd>
         </dl>
       </section>
     </div>
