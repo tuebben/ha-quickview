@@ -96,6 +96,7 @@ Global ToggleRequestState.s = ""
 Global ToggleResultMessage.s = ""
 Global NewMap I18N.s()
 Global CurrentLanguage.s = "en"
+Global PreferredLanguage.s = "en" ; "", "en", "de", "fr", "es" (leer = Auto-Erkennung)
 
 ; --- Deklarationen ---
 Declare RefreshGUI(ForceReload = #False)
@@ -148,10 +149,30 @@ Procedure.s GetJSONStringSafe(Value.i, Member.s = "")
 EndProcedure
 
 Procedure.s DetectLanguageCode()
-  Protected Lang.s = LCase(Trim(GetEnvironmentVariable("LANG")))
-  If Left(Lang, 2) = "de"
-    ProcedureReturn "de"
+  Protected Lang.s = ""
+  
+  Lang = LCase(Trim(GetEnvironmentVariable("LC_ALL")))
+  If Lang = ""
+    Lang = LCase(Trim(GetEnvironmentVariable("LC_MESSAGES")))
   EndIf
+  If Lang = ""
+    Lang = LCase(Trim(GetEnvironmentVariable("LANG")))
+  EndIf
+  If Lang = ""
+    Lang = LCase(Trim(GetEnvironmentVariable("LANGUAGE")))
+  EndIf
+  
+  If Left(Lang, 2) = "de" : ProcedureReturn "de" : EndIf
+  If Left(Lang, 2) = "fr" : ProcedureReturn "fr" : EndIf
+  If Left(Lang, 2) = "es" : ProcedureReturn "es" : EndIf
+  If Left(Lang, 2) = "en" : ProcedureReturn "en" : EndIf
+  
+  ; LANGUAGE kann z. B. "fr:de:en" enthalten
+  If FindString(Lang, "de", 1) : ProcedureReturn "de" : EndIf
+  If FindString(Lang, "fr", 1) : ProcedureReturn "fr" : EndIf
+  If FindString(Lang, "es", 1) : ProcedureReturn "es" : EndIf
+  If FindString(Lang, "en", 1) : ProcedureReturn "en" : EndIf
+  
   ProcedureReturn "en"
 EndProcedure
 
@@ -211,6 +232,10 @@ EndProcedure
 
 Procedure InitLanguage()
   Protected Lang.s = DetectLanguageCode()
+  
+  If PreferredLanguage <> ""
+    Lang = LCase(PreferredLanguage)
+  EndIf
   
   If Not LoadLanguageStrings(Lang)
     If Not LoadLanguageStrings("en")
@@ -1011,6 +1036,12 @@ Procedure.s GetLanguageJSON(LanguageCode.s)
       ProcedureReturn GetEmbeddedTemplate(?LangDE_Begin, ?LangDE_End)
     Case "en"
       ProcedureReturn GetEmbeddedTemplate(?LangEN_Begin, ?LangEN_End)
+    Case "fr"
+      ProcedureReturn GetEmbeddedTemplate(?LangFR_Begin, ?LangFR_End)
+    Case "es"
+      ProcedureReturn GetEmbeddedTemplate(?LangES_Begin, ?LangES_End)
+    Case "it"
+      ProcedureReturn GetEmbeddedTemplate(?LangIT_Begin, ?LangIT_End)
   EndSelect
   ProcedureReturn ""
 EndProcedure
@@ -1054,6 +1085,15 @@ DataSection
   LangEN_Begin:
   IncludeBinary "assets/i18n/lang.en.json"
   LangEN_End:
+  LangFR_Begin:
+  IncludeBinary "assets/i18n/lang.fr.json"
+  LangFR_End:
+  LangES_Begin:
+  IncludeBinary "assets/i18n/lang.es.json"
+  LangES_End:
+  LangIT_Begin:
+  IncludeBinary "assets/i18n/lang.it.json"
+  LangIT_End:
 EndDataSection
 
 ; --- GUI Funktionen (Dialog Library) ---
@@ -1586,9 +1626,9 @@ Until Event = #PB_Event_CloseWindow And Window = #Win_Main
 
 End
 ; IDE Options = PureBasic 6.30 - C Backend (MacOS X - arm64)
-; CursorPosition = 769
-; FirstLine = 209
-; Folding = LBA----
+; CursorPosition = 98
+; FirstLine = 72
+; Folding = rJA------
 ; EnableThread
 ; EnableXP
 ; DPIAware
