@@ -94,6 +94,8 @@ Global ToggleRequestEntityID.s = ""
 Global ToggleRequestDomain.s = ""
 Global ToggleRequestState.s = ""
 Global ToggleResultMessage.s = ""
+Global NewMap I18N.s()
+Global CurrentLanguage.s = "en"
 
 ; --- Deklarationen ---
 Declare RefreshGUI(ForceReload = #False)
@@ -119,6 +121,12 @@ Declare.s EscapeJSString(Text.s)
 Declare UpdateMainLoadingUI(Loading.i, Message.s = "")
 Declare.s GetConfigFilePath()
 Declare.i EnsureConnectionConfig()
+Declare InitLanguage()
+Declare.i LoadLanguageStrings(LanguageCode.s)
+Declare.s GetLanguageJSON(LanguageCode.s)
+Declare.s DetectLanguageCode()
+Declare.s T(Key.s, Fallback.s = "")
+Declare.s ApplyI18NPlaceholders(Text.s)
 
 ; --- Hilfsfunktionen für JSON ---
 
@@ -137,6 +145,78 @@ Procedure.s GetJSONStringSafe(Value.i, Member.s = "")
     ProcedureReturn GetJSONString(MemberValue)
   EndIf
   ProcedureReturn ""
+EndProcedure
+
+Procedure.s DetectLanguageCode()
+  Protected Lang.s = LCase(Trim(GetEnvironmentVariable("LANG")))
+  If Left(Lang, 2) = "de"
+    ProcedureReturn "de"
+  EndIf
+  ProcedureReturn "en"
+EndProcedure
+
+Procedure.s T(Key.s, Fallback.s = "")
+  If Key <> "" And FindMapElement(I18N(), Key)
+    ProcedureReturn I18N()
+  EndIf
+  If Fallback <> ""
+    ProcedureReturn Fallback
+  EndIf
+  ProcedureReturn Key
+EndProcedure
+
+Procedure.s ApplyI18NPlaceholders(Text.s)
+  If Text = ""
+    ProcedureReturn ""
+  EndIf
+  
+  ForEach I18N()
+    Text = ReplaceString(Text, "{{" + MapKey(I18N()) + "}}", I18N())
+  Next
+  
+  ProcedureReturn Text
+EndProcedure
+
+Procedure.i LoadLanguageStrings(LanguageCode.s)
+  Protected JsonPayload.s = GetLanguageJSON(LanguageCode)
+  Protected Json.i
+  Protected Root.i
+  Protected NewMap TempLang.s()
+  
+  If JsonPayload = ""
+    ProcedureReturn #False
+  EndIf
+  
+  Json = ParseJSON(#PB_Any, JsonPayload)
+  If Not Json
+    ProcedureReturn #False
+  EndIf
+  
+  Root = JSONValue(Json)
+  If Not Root Or JSONType(Root) <> #PB_JSON_Object
+    FreeJSON(Json)
+    ProcedureReturn #False
+  EndIf
+  
+  ExtractJSONMap(Root, TempLang())
+  ClearMap(I18N())
+  ForEach TempLang()
+    I18N(MapKey(TempLang())) = TempLang()
+  Next
+  
+  FreeJSON(Json)
+  CurrentLanguage = LanguageCode
+  ProcedureReturn #True
+EndProcedure
+
+Procedure InitLanguage()
+  Protected Lang.s = DetectLanguageCode()
+  
+  If Not LoadLanguageStrings(Lang)
+    If Not LoadLanguageStrings("en")
+      ClearMap(I18N())
+    EndIf
+  EndIf
 EndProcedure
 
 ; --- Hilfsfunktionen für HTTP ---
@@ -467,7 +547,7 @@ Procedure.i AreasLoaderThread(*Unused)
   If Ok
     LoadedAreasError = ""
   Else
-    LoadedAreasError = "Laden der Bereiche fehlgeschlagen."
+    LoadedAreasError = T("MSG_LOAD_AREAS_FAILED", "Loading areas failed.")
   EndIf
   StartPending = PendingRefresh
   PendingRefresh = #False
@@ -501,14 +581,14 @@ Procedure StartAreasRefresh()
   UnlockMutex(FetchMutex)
   
   If StartThread
-    UpdateMainLoadingUI(#True, "Aktualisiere...")
+    UpdateMainLoadingUI(#True, T("MSG_UPDATING", "Updating..."))
     FetchThread = CreateThread(@AreasLoaderThread(), 0)
     If FetchThread = 0
       LockMutex(FetchMutex)
       IsLoading = #False
-      LoadedAreasError = "Thread konnte nicht gestartet werden."
+      LoadedAreasError = T("MSG_THREAD_START_FAILED", "Thread could not be started.")
       UnlockMutex(FetchMutex)
-      UpdateMainLoadingUI(#False, "Thread konnte nicht gestartet werden.")
+      UpdateMainLoadingUI(#False, T("MSG_THREAD_START_FAILED", "Thread could not be started."))
       PostEvent(#Event_AreasLoadFailed)
     EndIf
   EndIf
@@ -539,7 +619,7 @@ Procedure.i ToggleEntityThread(*Unused)
   LockMutex(ToggleMutex)
   ToggleIsLoading = #False
   If ToggleResp = ""
-    ToggleResultMessage = "Schalten fehlgeschlagen."
+    ToggleResultMessage = T("MSG_TOGGLE_FAILED", "Switching failed.")
   Else
     ToggleResultMessage = ""
   EndIf
@@ -576,12 +656,12 @@ Procedure.i StartToggleRequest(EntityID.s, NextState.s, Domain.s)
     ProcedureReturn #False
   EndIf
   
-  UpdateMainLoadingUI(#True, "Schalte...")
+  UpdateMainLoadingUI(#True, T("MSG_TOGGLING", "Switching..."))
   ToggleThread = CreateThread(@ToggleEntityThread(), 0)
   If ToggleThread = 0
     LockMutex(ToggleMutex)
     ToggleIsLoading = #False
-    ToggleResultMessage = "Thread konnte nicht gestartet werden."
+    ToggleResultMessage = T("MSG_THREAD_START_FAILED", "Thread could not be started.")
     UnlockMutex(ToggleMutex)
     PostEvent(#Event_ToggleFailed)
     ProcedureReturn #False
@@ -855,18 +935,18 @@ Procedure.i EnsureConnectionConfig()
     ProcedureReturn #True
   EndIf
   
-  If OpenWindow(#Win_Config, 0, 0, WinW, WinH, "HA QuickView - Verbindung einrichten", #PB_Window_SystemMenu | #PB_Window_ScreenCentered)
-    TextGadget(#Txt_ConfigHeader, Margin, 16, WinW - Margin * 2, 26, "Home Assistant verbinden")
-    TextGadget(#Txt_ConfigInfo, Margin, 44, WinW - Margin * 2, 22, "Bitte URL und Long-Lived Access Token eingeben.")
-    FrameGadget(#Frm_ConfigConnection, Margin - 4, 74, WinW - (Margin - 4) * 2, 166, "Verbindungsdaten")
+  If OpenWindow(#Win_Config, 0, 0, WinW, WinH, T("WIN_CONFIG_TITLE", "HA QuickView - Connection Setup"), #PB_Window_SystemMenu | #PB_Window_ScreenCentered)
+    TextGadget(#Txt_ConfigHeader, Margin, 16, WinW - Margin * 2, 26, T("CFG_HEADER", "Connect Home Assistant"))
+    TextGadget(#Txt_ConfigInfo, Margin, 44, WinW - Margin * 2, 22, T("CFG_INFO", "Please enter URL and long-lived access token."))
+    FrameGadget(#Frm_ConfigConnection, Margin - 4, 74, WinW - (Margin - 4) * 2, 166, T("CFG_GROUP", "Connection Details"))
     
-    TextGadget(#Txt_ConfigBase, Margin + 12, 102, WinW - (Margin + 12) * 2, 20, "Home Assistant URL (z. B. http://homeassistant.local:8123)")
+    TextGadget(#Txt_ConfigBase, Margin + 12, 102, WinW - (Margin + 12) * 2, 20, T("CFG_URL_LABEL", "Home Assistant URL (e.g. http://homeassistant.local:8123)"))
     StringGadget(#Str_ConfigBase, Margin + 12, 124, WinW - (Margin + 12) * 2, 30, HA_BASE_URL)
-    TextGadget(#Txt_ConfigToken, Margin + 12, 164, WinW - (Margin + 12) * 2, 20, "Long-Lived Access Token")
+    TextGadget(#Txt_ConfigToken, Margin + 12, 164, WinW - (Margin + 12) * 2, 20, T("CFG_TOKEN_LABEL", "Long-Lived Access Token"))
     StringGadget(#Str_ConfigToken, Margin + 12, 186, WinW - (Margin + 12) * 2, 30, HA_TOKEN)
     
-    ButtonGadget(#Btn_ConfigSave, WinW - 250, WinH - 52, 110, 34, "Speichern", #PB_Button_Default)
-    ButtonGadget(#Btn_ConfigCancel, WinW - 128, WinH - 52, 110, 34, "Abbrechen")
+    ButtonGadget(#Btn_ConfigSave, WinW - 250, WinH - 52, 110, 34, T("TXT_SAVE", "Save"), #PB_Button_Default)
+    ButtonGadget(#Btn_ConfigCancel, WinW - 128, WinH - 52, 110, 34, T("TXT_CANCEL", "Cancel"))
     
     If Trim(HA_BASE_URL) = ""
       SetGadgetText(#Str_ConfigBase, "http://homeassistant.local:8123")
@@ -888,7 +968,7 @@ Procedure.i EnsureConnectionConfig()
           
           If UrlVal <> "" And TokenVal <> ""
             If Left(LCase(UrlVal), 7) <> "http://" And Left(LCase(UrlVal), 8) <> "https://"
-              MessageRequester("Ungültige URL", "Bitte die URL mit http:// oder https:// angeben.", #PB_MessageRequester_Warning)
+              MessageRequester(T("MSG_INVALID_URL_TITLE", "Invalid URL"), T("MSG_INVALID_URL_BODY", "Please provide the URL with http:// or https://."), #PB_MessageRequester_Warning)
               Continue
             EndIf
             HA_BASE_URL = UrlVal
@@ -897,7 +977,7 @@ Procedure.i EnsureConnectionConfig()
             Saved = #True
             Break
           Else
-            MessageRequester("Fehlende Angaben", "Bitte URL und Access Token eingeben.", #PB_MessageRequester_Warning)
+            MessageRequester(T("MSG_MISSING_FIELDS_TITLE", "Missing Information"), T("MSG_MISSING_FIELDS_BODY", "Please enter URL and access token."), #PB_MessageRequester_Warning)
           EndIf
         ElseIf Gad = #Btn_ConfigCancel
           Break
@@ -925,6 +1005,16 @@ Procedure.s GetDemoDataJSON()
   ProcedureReturn GetEmbeddedTemplate(?DemoData_Begin, ?DemoData_End)
 EndProcedure
 
+Procedure.s GetLanguageJSON(LanguageCode.s)
+  Select LCase(LanguageCode)
+    Case "de"
+      ProcedureReturn GetEmbeddedTemplate(?LangDE_Begin, ?LangDE_End)
+    Case "en"
+      ProcedureReturn GetEmbeddedTemplate(?LangEN_Begin, ?LangEN_End)
+  EndSelect
+  ProcedureReturn ""
+EndProcedure
+
 Procedure.s GetHTMLTemplate()
   Protected html.s = GetEmbeddedTemplate(?MainHTML_Begin, ?MainHTML_End)
   Protected DemoFlag.s = "false"
@@ -937,12 +1027,14 @@ Procedure.s GetHTMLTemplate()
   html = ReplaceString(html, "{{HA_TOKEN}}", EscapeJSString(HA_TOKEN))
   html = ReplaceString(html, "{{DEMO_MODE}}", DemoFlag)
   html = ReplaceString(html, "{{DEMO_DATA_INLINE}}", DemoJSON)
+  html = ApplyI18NPlaceholders(html)
   ProcedureReturn html
 EndProcedure
 
 Procedure.s GetSettingsHTMLTemplate(AreaName.s)
   Protected html.s = GetEmbeddedTemplate(?SettingsHTML_Begin, ?SettingsHTML_End)
   html = ReplaceString(html, "{{AREA_NAME}}", EscapeXML(AreaName))
+  html = ApplyI18NPlaceholders(html)
   ProcedureReturn html
 EndProcedure
 
@@ -956,6 +1048,12 @@ DataSection
   DemoData_Begin:
   IncludeBinary "assets/demo-data.json"
   DemoData_End:
+  LangDE_Begin:
+  IncludeBinary "assets/i18n/lang.de.json"
+  LangDE_End:
+  LangEN_Begin:
+  IncludeBinary "assets/i18n/lang.en.json"
+  LangEN_End:
 EndDataSection
 
 ; --- GUI Funktionen (Dialog Library) ---
@@ -1046,7 +1144,7 @@ Procedure ShowAreaSettings(AreaID.s)
   
   CurrentSettingsAreaID = AreaID
   If Not IsWindow(#Win_Settings)
-    If OpenWindow(#Win_Settings, 0, 0, 600, 700, "Setup: " + AreaName, #PB_Window_SystemMenu | #PB_Window_WindowCentered | #PB_Window_Invisible, ParentHandle)
+    If OpenWindow(#Win_Settings, 0, 0, 600, 700, T("WIN_SETTINGS_PREFIX", "Setup:") + " " + AreaName, #PB_Window_SystemMenu | #PB_Window_WindowCentered | #PB_Window_Invisible, ParentHandle)
       WebViewGadget(#Web_Settings, 0, 0, 600, 700)
       BindWebViewCallback(#Web_Settings, "OnJS_ReadySettings", @OnJS_ReadySettings())
       BindWebViewCallback(#Web_Settings, "OnJS_SaveSettings", @OnJS_SaveSettings())
@@ -1054,7 +1152,7 @@ Procedure ShowAreaSettings(AreaID.s)
       SetGadgetItemText(#Web_Settings, #PB_WebView_HtmlCode, GetSettingsHTMLTemplate(AreaName))
     EndIf
   Else
-    SetWindowTitle(#Win_Settings, "Setup: " + AreaName)
+    SetWindowTitle(#Win_Settings, T("WIN_SETTINGS_PREFIX", "Setup:") + " " + AreaName)
     SetGadgetItemText(#Web_Settings, #PB_WebView_HtmlCode, GetSettingsHTMLTemplate(AreaName))
   EndIf
   
@@ -1088,7 +1186,7 @@ Procedure RefreshGUI(ForceReload = #False)
   
   ; WebView Initialisierung / Update
   If Not IsWindow(#Win_Main)
-    If OpenWindow(#Win_Main, 0, 0, 1000, 700, "HA QuickView", #PB_Window_SystemMenu | #PB_Window_ScreenCentered | #PB_Window_SizeGadget)
+    If OpenWindow(#Win_Main, 0, 0, 1000, 700, T("WIN_MAIN_TITLE", "HA QuickView"), #PB_Window_SystemMenu | #PB_Window_ScreenCentered | #PB_Window_SizeGadget)
       WebViewGadget(#Web_Main, 0, 0, WindowWidth(#Win_Main), WindowHeight(#Win_Main))
       BindWebViewCallback(#Web_Main, "OnJS_Settings", @OnJS_Settings())
       BindWebViewCallback(#Web_Main, "OnJS_Refresh", @OnJS_Refresh())
@@ -1105,7 +1203,7 @@ Procedure RefreshGUI(ForceReload = #False)
   UnlockMutex(FetchMutex)
   
   If LoadingNow
-    UpdateMainLoadingUI(#True, "Aktualisiere...")
+    UpdateMainLoadingUI(#True, T("MSG_UPDATING", "Updating..."))
   Else
     UpdateMainLoadingUI(#False, "")
   EndIf
@@ -1169,15 +1267,17 @@ Define PayloadCopy.s, ErrorCopy.s
 Define ToggleDomain.s
 Define DesignAction.s, DesignAreaID.s, VisibleFlag.i, OrderPos.i, Arg1Val, Arg2Val
 
+InitLanguage()
+
 FetchMutex = CreateMutex()
 If FetchMutex = 0
-  MessageRequester("Fehler", "Mutex konnte nicht erstellt werden.", #PB_MessageRequester_Error)
+  MessageRequester(T("MSG_ERROR_TITLE", "Error"), T("MSG_MUTEX_FAILED", "Mutex could not be created."), #PB_MessageRequester_Error)
   End
 EndIf
 
 ToggleMutex = CreateMutex()
 If ToggleMutex = 0
-  MessageRequester("Fehler", "Toggle-Mutex konnte nicht erstellt werden.", #PB_MessageRequester_Error)
+  MessageRequester(T("MSG_ERROR_TITLE", "Error"), T("MSG_TOGGLE_MUTEX_FAILED", "Toggle mutex could not be created."), #PB_MessageRequester_Error)
   End
 EndIf
 
@@ -1320,7 +1420,7 @@ Repeat
       UpdateMainLoadingUI(#False, "")
     Else
       Debug "Bereichsdaten konnten nicht geparst werden."
-      UpdateMainLoadingUI(#False, "Daten konnten nicht verarbeitet werden.")
+      UpdateMainLoadingUI(#False, T("MSG_DATA_PARSE_FAILED", "Data could not be processed."))
     EndIf
     
   ElseIf Event = #Event_AreasLoadFailed
@@ -1329,7 +1429,7 @@ Repeat
     UnlockMutex(FetchMutex)
     
     If ErrorCopy = ""
-      ErrorCopy = "Unbekannter Fehler beim Laden."
+      ErrorCopy = T("MSG_UNKNOWN_LOAD_ERROR", "Unknown loading error.")
     EndIf
     Debug ErrorCopy
     UpdateMainLoadingUI(#False, ErrorCopy)
@@ -1344,7 +1444,7 @@ Repeat
       ToggleEntityState = LCase(ToggleEntityState)
       If (ToggleEntityState = "on" Or ToggleEntityState = "off") And (ToggleDomain = "switch" Or ToggleDomain = "light" Or ToggleDomain = "input_boolean")
         If Not StartToggleRequest(ToggleEntityID, ToggleEntityState, ToggleDomain)
-          UpdateMainLoadingUI(#False, "Schalten läuft bereits...")
+          UpdateMainLoadingUI(#False, T("MSG_TOGGLE_ALREADY_RUNNING", "Switching is already in progress..."))
         EndIf
       EndIf
       
@@ -1363,7 +1463,7 @@ Repeat
     ErrorCopy = ToggleResultMessage
     UnlockMutex(ToggleMutex)
     If ErrorCopy = ""
-      ErrorCopy = "Schalten fehlgeschlagen."
+      ErrorCopy = T("MSG_TOGGLE_FAILED", "Switching failed.")
     EndIf
     UpdateMainLoadingUI(#False, ErrorCopy)
     
@@ -1486,10 +1586,10 @@ Until Event = #PB_Event_CloseWindow And Window = #Win_Main
 
 End
 ; IDE Options = PureBasic 6.30 - C Backend (MacOS X - arm64)
-; CursorPosition = 736
-; FirstLine = 153
-; Folding = LBA-----
+; CursorPosition = 769
+; FirstLine = 209
+; Folding = LBA----
 ; EnableThread
 ; EnableXP
 ; DPIAware
-; Executable = ../../Applications/myApps/QHA/QHA.app
+; Executable = /Users/peter/Applications/myApps/HA QuickView/HA QuickView.app
