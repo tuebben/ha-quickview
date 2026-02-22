@@ -7,6 +7,7 @@ Dein schneller Überblick über Home Assistant auf dem Desktop.
 - [Dokumentation](#dokumentation)
 - [Screenshots](#screenshots)
 - [Download](#download)
+- [Lizenz](#lizenz)
 - [Impressum](#impressum)
 
 ## Dokumentation
@@ -38,6 +39,13 @@ HA QuickView zeigt dir deine Home-Assistant-Räume in einer aufgeräumten Karten
 Alle veröffentlichten Versionen findest du auf GitHub:
 
 [Zu den Releases](https://github.com/tuebben/ha-quickview/releases)
+
+## Lizenz
+
+Die App ist kostenlos für private und sonstige nicht-kommerzielle Nutzung.
+Kommerzielle Nutzung ist ohne vorherige schriftliche Genehmigung nicht erlaubt.
+
+Details: [LICENSE](./LICENSE)
 
 ## Impressum
 
