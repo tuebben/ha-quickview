@@ -96,7 +96,7 @@ Global ToggleRequestState.s = ""
 Global ToggleResultMessage.s = ""
 Global NewMap I18N.s()
 Global CurrentLanguage.s = "en"
-Global PreferredLanguage.s = "it" ; "", "en", "de", "fr", "es" (leer = Auto-Erkennung)
+Global PreferredLanguage.s = "en" ; "", "en", "de", "fr", "es" (leer = Auto-Erkennung)
 
 ; --- Deklarationen ---
 Declare RefreshGUI(ForceReload = #False)
@@ -1633,8 +1633,8 @@ Until Event = #PB_Event_CloseWindow And Window = #Win_Main
 
 End
 ; IDE Options = PureBasic 6.30 - C Backend (MacOS X - arm64)
-; CursorPosition = 118
-; FirstLine = 101
+; CursorPosition = 98
+; FirstLine = 70
 ; Folding = bTA+-----
 ; EnableThread
 ; EnableXP
