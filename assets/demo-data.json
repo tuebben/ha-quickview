@@ -1,0 +1,517 @@
+{
+  "areas": [
+    {
+      "id": "area_nord",
+      "name": "Kueche",
+      "temp_id": "sensor.kueche_temp",
+      "temp_val": "20.9",
+      "humid_id": "sensor.kueche_humidity",
+      "humid_val": "54",
+      "all_entities": [
+        {
+          "id": "light.kueche_light_1",
+          "name": "Deckenleuchte Kueche",
+          "state": "off",
+          "unit": "",
+          "brightness": "",
+          "domain": "light"
+        },
+        {
+          "id": "sensor.kueche_power_1",
+          "name": "Steckdose Kueche Leistung",
+          "state": "312",
+          "unit": "W",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "sensor.kueche_air_1",
+          "name": "Luftqualitaet Kueche",
+          "state": "980",
+          "unit": "ppm",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "sensor.kueche_temp_1",
+          "name": "Raumtemperatur Kueche",
+          "state": "20.9",
+          "unit": "°C",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "sensor.kueche_temp",
+          "name": "Temperatur Kueche",
+          "state": "20.9",
+          "unit": "°C",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "sensor.kueche_humidity",
+          "name": "Luftfeuchte Kueche",
+          "state": "54",
+          "unit": "%",
+          "brightness": "",
+          "domain": "sensor"
+        }
+      ]
+    },
+    {
+      "id": "area_west",
+      "name": "Wohnzimmer",
+      "temp_id": "sensor.wohnzimmer_temp",
+      "temp_val": "18.6",
+      "humid_id": "sensor.wohnzimmer_humidity",
+      "humid_val": "51",
+      "all_entities": [
+        {
+          "id": "light.wohnzimmer_light_1",
+          "name": "Deckenleuchte Wohnzimmer",
+          "state": "off",
+          "unit": "",
+          "brightness": "",
+          "domain": "light"
+        },
+        {
+          "id": "sensor.wohnzimmer_power_2",
+          "name": "Steckdose Wohnzimmer Leistung",
+          "state": "0.1",
+          "unit": "W",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "switch.wohnzimmer_switch_3",
+          "name": "Steckdose Wohnzimmer",
+          "state": "off",
+          "unit": "",
+          "brightness": "",
+          "domain": "switch"
+        },
+        {
+          "id": "sensor.wohnzimmer_heating_4",
+          "name": "Heizung Wohnzimmer",
+          "state": "0.0",
+          "unit": "W",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "switch.wohnzimmer_heating_5",
+          "name": "Heizung Wohnzimmer",
+          "state": "off",
+          "unit": "",
+          "brightness": "",
+          "domain": "switch"
+        },
+        {
+          "id": "sensor.wohnzimmer_temp",
+          "name": "Temperatur Wohnzimmer",
+          "state": "18.6",
+          "unit": "°C",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "sensor.wohnzimmer_humidity",
+          "name": "Luftfeuchte Wohnzimmer",
+          "state": "51",
+          "unit": "%",
+          "brightness": "",
+          "domain": "sensor"
+        }
+      ]
+    },
+    {
+      "id": "area_mitte",
+      "name": "Hobbyraum",
+      "temp_id": "sensor.hobbyraum_temp",
+      "temp_val": "20.1",
+      "humid_id": "sensor.hobbyraum_humidity",
+      "humid_val": "57",
+      "all_entities": [
+        {
+          "id": "light.hobbyraum_light_1",
+          "name": "Deckenleuchte Hobbyraum",
+          "state": "off",
+          "unit": "",
+          "brightness": "",
+          "domain": "light"
+        },
+        {
+          "id": "switch.hobbyraum_switch_2",
+          "name": "Steckdose Hobbyraum",
+          "state": "on",
+          "unit": "",
+          "brightness": "",
+          "domain": "switch"
+        },
+        {
+          "id": "sensor.hobbyraum_power_2",
+          "name": "Steckdose Hobbyraum Leistung",
+          "state": "0",
+          "unit": "W",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "sensor.hobbyraum_voltage_2",
+          "name": "Steckdose Hobbyraum Spannung",
+          "state": "228",
+          "unit": "V",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "sensor.hobbyraum_energy_2",
+          "name": "Steckdose Hobbyraum Energie",
+          "state": "5.17",
+          "unit": "kWh",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "sensor.hobbyraum_device_power_2",
+          "name": "Steckdose Hobbyraum Leistung",
+          "state": "0.40",
+          "unit": "W",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "sensor.hobbyraum_device_energy_2",
+          "name": "Steckdose Hobbyraum Geraeteenergie",
+          "state": "0.281",
+          "unit": "kWh",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "sensor.hobbyraum_temp",
+          "name": "Temperatur Hobbyraum",
+          "state": "20.1",
+          "unit": "°C",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "sensor.hobbyraum_humidity",
+          "name": "Luftfeuchte Hobbyraum",
+          "state": "57",
+          "unit": "%",
+          "brightness": "",
+          "domain": "sensor"
+        }
+      ]
+    },
+    {
+      "id": "area_bad",
+      "name": "Badezimmer",
+      "temp_id": "sensor.badezimmer_temp",
+      "temp_val": "21.3",
+      "humid_id": "sensor.badezimmer_humidity",
+      "humid_val": "68",
+      "all_entities": [
+        {
+          "id": "sensor.badezimmer_temp",
+          "name": "Temperatur Badezimmer",
+          "state": "21.3",
+          "unit": "°C",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "sensor.badezimmer_humidity",
+          "name": "Luftfeuchte Badezimmer",
+          "state": "68",
+          "unit": "%",
+          "brightness": "",
+          "domain": "sensor"
+        }
+      ]
+    },
+    {
+      "id": "area_kind1",
+      "name": "Arbeitszimmer",
+      "temp_id": "sensor.arbeitszimmer_temp",
+      "temp_val": "18.9",
+      "humid_id": "sensor.arbeitszimmer_humidity",
+      "humid_val": "61",
+      "all_entities": [
+        {
+          "id": "sensor.arbeitszimmer_temp",
+          "name": "Temperatur Arbeitszimmer",
+          "state": "18.9",
+          "unit": "°C",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "sensor.arbeitszimmer_humidity",
+          "name": "Luftfeuchte Arbeitszimmer",
+          "state": "61",
+          "unit": "%",
+          "brightness": "",
+          "domain": "sensor"
+        }
+      ]
+    },
+    {
+      "id": "area_kind2",
+      "name": "Gaestezimmer",
+      "temp_id": "sensor.gaestezimmer_temp",
+      "temp_val": "18.2",
+      "humid_id": "sensor.gaestezimmer_humidity",
+      "humid_val": "58",
+      "all_entities": [
+        {
+          "id": "sensor.gaestezimmer_temp",
+          "name": "Temperatur Gaestezimmer",
+          "state": "18.2",
+          "unit": "°C",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "sensor.gaestezimmer_humidity",
+          "name": "Luftfeuchte Gaestezimmer",
+          "state": "58",
+          "unit": "%",
+          "brightness": "",
+          "domain": "sensor"
+        }
+      ]
+    },
+    {
+      "id": "area_eingang",
+      "name": "Eingangsbereich",
+      "temp_id": "",
+      "temp_val": "",
+      "humid_id": "",
+      "humid_val": "",
+      "all_entities": []
+    },
+    {
+      "id": "area_flur",
+      "name": "Flur",
+      "temp_id": "",
+      "temp_val": "",
+      "humid_id": "",
+      "humid_val": "",
+      "all_entities": [
+        {
+          "id": "light.flur_light_1",
+          "name": "Flurlicht",
+          "state": "off",
+          "unit": "",
+          "brightness": "",
+          "domain": "light"
+        }
+      ]
+    },
+    {
+      "id": "area_werkstatt",
+      "name": "Keller",
+      "temp_id": "",
+      "temp_val": "",
+      "humid_id": "",
+      "humid_val": "",
+      "all_entities": [
+        {
+          "id": "light.keller_light_1",
+          "name": "Deckenleuchte Keller",
+          "state": "off",
+          "unit": "",
+          "brightness": "",
+          "domain": "light"
+        },
+        {
+          "id": "sensor.keller_power_1",
+          "name": "Leuchte G1 Last",
+          "state": "0.08",
+          "unit": "W",
+          "brightness": "",
+          "domain": "sensor"
+        }
+      ]
+    },
+    {
+      "id": "area_technik",
+      "name": "Hauswirtschaftsraum",
+      "temp_id": "sensor.hauswirtschaftsraum_temp",
+      "temp_val": "19.7",
+      "humid_id": "sensor.hauswirtschaftsraum_humidity",
+      "humid_val": "49",
+      "all_entities": [
+        {
+          "id": "sensor.hauswirtschaftsraum_temp",
+          "name": "Temperatur Hauswirtschaftsraum",
+          "state": "19.7",
+          "unit": "°C",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "sensor.hauswirtschaftsraum_humidity",
+          "name": "Luftfeuchte Hauswirtschaftsraum",
+          "state": "49",
+          "unit": "%",
+          "brightness": "",
+          "domain": "sensor"
+        }
+      ]
+    },
+    {
+      "id": "area_essen",
+      "name": "Esszimmer",
+      "temp_id": "sensor.esszimmer_temp",
+      "temp_val": "19.1",
+      "humid_id": "sensor.esszimmer_humidity",
+      "humid_val": "55",
+      "all_entities": [
+        {
+          "id": "sensor.esszimmer_temp",
+          "name": "Temperatur Esszimmer",
+          "state": "19.1",
+          "unit": "°C",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "sensor.esszimmer_humidity",
+          "name": "Luftfeuchte Esszimmer",
+          "state": "55",
+          "unit": "%",
+          "brightness": "",
+          "domain": "sensor"
+        }
+      ]
+    },
+    {
+      "id": "area_sued",
+      "name": "Schlafzimmer",
+      "temp_id": "sensor.schlafzimmer_temp",
+      "temp_val": "18.8",
+      "humid_id": "sensor.schlafzimmer_humidity",
+      "humid_val": "56",
+      "all_entities": [
+        {
+          "id": "sensor.schlafzimmer_temp",
+          "name": "Temperatur Schlafzimmer",
+          "state": "18.8",
+          "unit": "°C",
+          "brightness": "",
+          "domain": "sensor"
+        },
+        {
+          "id": "sensor.schlafzimmer_humidity",
+          "name": "Luftfeuchte Schlafzimmer",
+          "state": "56",
+          "unit": "%",
+          "brightness": "",
+          "domain": "sensor"
+        }
+      ]
+    }
+  ],
+  "configs": {
+    "area_nord": {
+      "area_id": "area_nord",
+      "visible_entities": [
+        "light.kueche_light_1",
+        "sensor.kueche_power_1",
+        "sensor.kueche_air_1",
+        "sensor.kueche_temp_1"
+      ],
+      "order": 1,
+      "visible": 1
+    },
+    "area_west": {
+      "area_id": "area_west",
+      "visible_entities": [
+        "light.wohnzimmer_light_1",
+        "sensor.wohnzimmer_power_2",
+        "switch.wohnzimmer_switch_3",
+        "sensor.wohnzimmer_heating_4",
+        "switch.wohnzimmer_heating_5"
+      ],
+      "order": 5,
+      "visible": 1
+    },
+    "area_mitte": {
+      "area_id": "area_mitte",
+      "visible_entities": [
+        "light.hobbyraum_light_1",
+        "switch.hobbyraum_switch_2",
+        "sensor.hobbyraum_power_2",
+        "sensor.hobbyraum_voltage_2",
+        "sensor.hobbyraum_energy_2",
+        "sensor.hobbyraum_device_power_2",
+        "sensor.hobbyraum_device_energy_2"
+      ],
+      "order": 2,
+      "visible": 1
+    },
+    "area_bad": {
+      "area_id": "area_bad",
+      "visible_entities": [],
+      "order": 3,
+      "visible": 1
+    },
+    "area_kind1": {
+      "area_id": "area_kind1",
+      "visible_entities": [],
+      "order": 4,
+      "visible": 1
+    },
+    "area_kind2": {
+      "area_id": "area_kind2",
+      "visible_entities": [],
+      "order": 6,
+      "visible": 1
+    },
+    "area_eingang": {
+      "area_id": "area_eingang",
+      "visible_entities": [],
+      "order": 7,
+      "visible": 1
+    },
+    "area_flur": {
+      "area_id": "area_flur",
+      "visible_entities": [
+        "light.flur_light_1"
+      ],
+      "order": 8,
+      "visible": 1
+    },
+    "area_werkstatt": {
+      "area_id": "area_werkstatt",
+      "visible_entities": [
+        "light.keller_light_1",
+        "sensor.keller_power_1"
+      ],
+      "order": 9,
+      "visible": 1
+    },
+    "area_technik": {
+      "area_id": "area_technik",
+      "visible_entities": [],
+      "order": 10,
+      "visible": 1
+    },
+    "area_essen": {
+      "area_id": "area_essen",
+      "visible_entities": [],
+      "order": 11,
+      "visible": 1
+    },
+    "area_sued": {
+      "area_id": "area_sued",
+      "visible_entities": [],
+      "order": 12,
+      "visible": 1
+    }
+  }
+}

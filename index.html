@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HA QuickView</title>
+  <meta name="description" content="HA QuickView - Home Assistant Übersicht mit Dokumentation, Download und Impressum.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #eef2ff;
+      --bg-alt: #dbeafe;
+      --ink: #0f172a;
+      --ink-soft: #334155;
+      --brand: #0ea5e9;
+      --brand-strong: #0369a1;
+      --surface: rgba(255, 255, 255, 0.8);
+      --line: rgba(15, 23, 42, 0.14);
+      --ok: #16a34a;
+      --radius: 16px;
+      --shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Manrope", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 8%, #ffffff 0%, transparent 45%),
+        radial-gradient(circle at 92% 18%, #bfdbfe 0%, transparent 42%),
+        linear-gradient(125deg, var(--bg) 0%, var(--bg-alt) 100%);
+    }
+
+    .page {
+      width: min(1080px, 92vw);
+      margin: 24px auto 48px;
+    }
+
+    .hero {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 8px);
+      background: var(--surface);
+      backdrop-filter: blur(8px);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      animation: fadeUp .6s ease-out;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -70px;
+      top: -70px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(14, 165, 233, .3), transparent 70%);
+      pointer-events: none;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 3.8vw, 3rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      margin: 12px 0 22px;
+      color: var(--ink-soft);
+      max-width: 700px;
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 10px 18px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: transform .18s ease, background .18s ease;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn.primary {
+      background: linear-gradient(90deg, var(--brand), var(--brand-strong));
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .grid {
+      margin-top: 18px;
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(12, 1fr);
+    }
+
+    section {
+      grid-column: span 12;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      backdrop-filter: blur(6px);
+      padding: 22px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      animation: fadeUp .7s ease both;
+    }
+
+    section:nth-child(2) {
+      animation-delay: .06s;
+    }
+
+    section:nth-child(3) {
+      animation-delay: .12s;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.4rem;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      margin: 0 0 12px;
+      color: var(--ink-soft);
+      line-height: 1.55;
+    }
+
+    code {
+      font-family: "JetBrains Mono", monospace;
+      font-size: .9em;
+      background: #e2e8f0;
+      border-radius: 6px;
+      padding: 2px 6px;
+      color: #0f172a;
+    }
+
+    .steps {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--ink-soft);
+    }
+
+    .steps li {
+      margin-bottom: 8px;
+    }
+
+    .download-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .hint {
+      margin: 0;
+      font-size: .92rem;
+      color: #0f766e;
+      background: rgba(204, 251, 241, .7);
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(13, 148, 136, .25);
+    }
+
+    .impressum-data {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 8px 12px;
+      color: var(--ink-soft);
+      max-width: 680px;
+    }
+
+    .impressum-data dt {
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .footer {
+      margin-top: 16px;
+      text-align: center;
+      color: #475569;
+      font-size: .92rem;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        margin-top: 16px;
+      }
+
+      .hero,
+      section {
+        padding: 18px;
+      }
+
+      .impressum-data {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <h1>HA QuickView</h1>
+      <p class="subtitle">
+        Eine kompakte Weboberflaeche fuer deine App. Alles auf einer Seite: Kurzdoku, Download und Impressum.
+      </p>
+      <nav class="nav" aria-label="Hauptnavigation">
+        <a class="btn" href="#dokumentation">Dokumentation</a>
+        <a class="btn primary" href="#download">Download</a>
+        <a class="btn" href="#impressum">Impressum</a>
+      </nav>
+    </header>
+
+    <div class="grid">
+      <section id="dokumentation">
+        <h2>Dokumentation</h2>
+        <p>
+          HA QuickView zeigt deine Home-Assistant-Bereiche in einer schnellen Kartenansicht. Sensoren, Schalter und Lichter
+          werden direkt dargestellt. Im Design-Modus kannst du die Reihenfolge anpassen und sichtbare Entitaeten verwalten.
+        </p>
+        <ol class="steps">
+          <li>App starten und Verbindung zu Home Assistant herstellen.</li>
+          <li>Mit <code>Design</code> in den Layout-Modus wechseln.</li>
+          <li>Bereiche und Entitaeten per Drag-and-Drop sortieren.</li>
+          <li>Sichtbarkeit je Bereich aktivieren oder ausblenden.</li>
+          <li>Mit <code>Fertig</code> speichern und normale Ansicht nutzen.</li>
+        </ol>
+      </section>
+
+      <section id="download">
+        <h2>Download</h2>
+        <p>
+          Lade hier die aktuelle Datei herunter und stelle sie auf deiner Domain bereit.
+        </p>
+        <div class="download-box">
+          <a class="btn primary" href="./QHA.pb" download>App herunterladen</a>
+          <p class="hint">Datei: <code>QHA.pb</code></p>
+        </div>
+      </section>
+
+      <section id="impressum">
+        <h2>Impressum</h2>
+        <p>Bitte ersetze die Platzhalter mit deinen echten Angaben, bevor du die Seite veroeffentlichst.</p>
+        <dl class="impressum-data">
+          <dt>Name</dt>
+          <dd>Max Mustermann</dd>
+          <dt>Adresse</dt>
+          <dd>Musterstrasse 1, 12345 Musterstadt, Deutschland</dd>
+          <dt>E-Mail</dt>
+          <dd>kontakt@deinedomain.de</dd>
+          <dt>Verantwortlich</dt>
+          <dd>Max Mustermann</dd>
+        </dl>
+      </section>
+    </div>
+
+    <p class="footer">© <span id="year"></span> HA QuickView</p>
+  </main>
+
+  <script>
+    document.getElementById("year").textContent = String(new Date().getFullYear());
+  </script>
+</body>
+</html>
