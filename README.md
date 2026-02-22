@@ -22,15 +22,15 @@ HA QuickView zeigt dir deine Home-Assistant-Räume in einer aufgeräumten Karten
 
 ## Screenshots
 
-![Hauptansicht mit Bereichen, Sensoren und Schaltern](./screenshot1.png)
+![Hauptansicht mit Bereichen, Sensoren und Schaltern](./screenshots/screenshot1.png)
 
 *Hauptansicht mit Bereichen, Sensoren und Schaltern.*
 
-![Design-Modus zum Sortieren und Anpassen der Sichtbarkeit](./screenshot2.png)
+![Design-Modus zum Sortieren und Anpassen der Sichtbarkeit](./screenshots/screenshot2.png)
 
 *Design-Modus zum Sortieren und Anpassen der Sichtbarkeit.*
 
-![Einstellungsansicht zur Auswahl sichtbarer Entitäten](./screenshot3.png)
+![Einstellungsansicht zur Auswahl sichtbarer Entitäten](./screenshots/screenshot3.png)
 
 *Einstellungsansicht zur Auswahl sichtbarer Entitäten.*
 
