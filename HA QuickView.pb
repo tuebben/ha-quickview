@@ -96,7 +96,7 @@ Global ToggleRequestState.s = ""
 Global ToggleResultMessage.s = ""
 Global NewMap I18N.s()
 Global CurrentLanguage.s = "en"
-Global PreferredLanguage.s = "en" ; "", "en", "de", "fr", "es" (leer = Auto-Erkennung)
+Global PreferredLanguage.s = "it" ; "", "en", "de", "fr", "es" (leer = Auto-Erkennung)
 
 ; --- Deklarationen ---
 Declare RefreshGUI(ForceReload = #False)
@@ -128,6 +128,13 @@ Declare.s GetLanguageJSON(LanguageCode.s)
 Declare.s DetectLanguageCode()
 Declare.s T(Key.s, Fallback.s = "")
 Declare.s ApplyI18NPlaceholders(Text.s)
+
+; ---
+
+CompilerIf Not #PB_Compiler_Thread
+  MessageRequester("HA QuickView", "Please enable threadsafe executable", #PB_MessageRequester_Ok)
+  End
+CompilerEndIf
 
 ; --- Hilfsfunktionen für JSON ---
 
@@ -1626,9 +1633,9 @@ Until Event = #PB_Event_CloseWindow And Window = #Win_Main
 
 End
 ; IDE Options = PureBasic 6.30 - C Backend (MacOS X - arm64)
-; CursorPosition = 98
-; FirstLine = 72
-; Folding = rJA------
+; CursorPosition = 118
+; FirstLine = 101
+; Folding = bTA+-----
 ; EnableThread
 ; EnableXP
 ; DPIAware
