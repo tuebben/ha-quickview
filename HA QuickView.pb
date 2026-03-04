@@ -1335,6 +1335,10 @@ Define PayloadCopy.s, ErrorCopy.s
 Define ToggleDomain.s
 Define DesignAction.s, DesignAreaID.s, VisibleFlag.i, OrderPos.i, Arg1Val, Arg2Val
 Define NewMap IncomingLabels.s()
+Define NewMap ValidEntityIDs.i()
+Define ParsedVisible.i, ParsedLabels.i
+Define InnerPayload.s
+Define InnerJson.i, InnerRoot.i
 
 InitLanguage()
 
@@ -1388,30 +1392,158 @@ Repeat
     
   ElseIf Event = #Event_SaveSettings
     If CurrentSettingsAreaID <> ""
+      ParsedVisible = #False
+      ParsedLabels = #False
+      InnerPayload = ""
+      InnerJson = 0
+      InnerRoot = 0
+      Arg0Val = 0
+      Arg1Val = 0
+      ArgVisibleVal = 0
+      ArgLabelsVal = 0
       ClearList(Params())
       ClearMap(IncomingLabels())
+      ClearMap(ValidEntityIDs())
+      
+      *FoundArea = 0
+      ForEach MyAreas()
+        If MyAreas()\id = CurrentSettingsAreaID
+          *FoundArea = @MyAreas()
+          Break
+        EndIf
+      Next
+      If *FoundArea
+        ForEach *FoundArea\all_entities()
+          ValidEntityIDs(*FoundArea\all_entities()\id) = 1
+        Next
+      EndIf
+      
       Json = ParseJSON(#PB_Any, SettingsDataBuffer)
       If Json
         RootVal = JSONValue(Json)
-        If RootVal And JSONType(RootVal) = #PB_JSON_Array And JSONArraySize(RootVal) > 0
-          Arg0Val = GetJSONElement(RootVal, 0)
-          If Arg0Val
-            If JSONType(Arg0Val) = #PB_JSON_Array
-              ; Legacy-Payload: direktes String-Array
-              ExtractJSONList(Arg0Val, Params())
-            ElseIf JSONType(Arg0Val) = #PB_JSON_Object
-              ; Neues Payload: { visible: [...], labels: {...} }
-              ArgVisibleVal = GetJSONMember(Arg0Val, "visible")
-              If ArgVisibleVal And JSONType(ArgVisibleVal) = #PB_JSON_Array
-                ExtractJSONList(ArgVisibleVal, Params())
+        If RootVal
+          Select JSONType(RootVal)
+            Case #PB_JSON_Array
+              If JSONArraySize(RootVal) > 0
+                Arg0Val = GetJSONElement(RootVal, 0)
+              EndIf
+              If JSONArraySize(RootVal) > 1
+                Arg1Val = GetJSONElement(RootVal, 1)
               EndIf
               
-              ArgLabelsVal = GetJSONMember(Arg0Val, "labels")
+              If Arg0Val
+                If JSONType(Arg0Val) = #PB_JSON_Array
+                  ; Legacy-Payload: direktes String-Array
+                  ExtractJSONList(Arg0Val, Params())
+                  ParsedVisible = #True
+                ElseIf JSONType(Arg0Val) = #PB_JSON_Object
+                  ; Neues Payload: { visible: [...], labels: {...} }
+                  ArgVisibleVal = GetJSONMember(Arg0Val, "visible")
+                  If ArgVisibleVal And JSONType(ArgVisibleVal) = #PB_JSON_Array
+                    ExtractJSONList(ArgVisibleVal, Params())
+                    ParsedVisible = #True
+                  EndIf
+                  
+                  ArgLabelsVal = GetJSONMember(Arg0Val, "labels")
+                  If ArgLabelsVal And JSONType(ArgLabelsVal) = #PB_JSON_Object
+                    ExtractJSONMap(ArgLabelsVal, IncomingLabels())
+                    ParsedLabels = #True
+                  EndIf
+                ElseIf JSONType(Arg0Val) = #PB_JSON_String
+                  ; Fallback: erstes Argument wurde als JSON-String übergeben
+                  InnerPayload = Trim(GetJSONString(Arg0Val))
+                  If InnerPayload <> ""
+                    InnerJson = ParseJSON(#PB_Any, InnerPayload)
+                    If InnerJson
+                      InnerRoot = JSONValue(InnerJson)
+                      If InnerRoot
+                        If JSONType(InnerRoot) = #PB_JSON_Array
+                          ExtractJSONList(InnerRoot, Params())
+                          ParsedVisible = #True
+                        ElseIf JSONType(InnerRoot) = #PB_JSON_Object
+                          ArgVisibleVal = GetJSONMember(InnerRoot, "visible")
+                          If ArgVisibleVal And JSONType(ArgVisibleVal) = #PB_JSON_Array
+                            ExtractJSONList(ArgVisibleVal, Params())
+                            ParsedVisible = #True
+                          EndIf
+                          
+                          ArgLabelsVal = GetJSONMember(InnerRoot, "labels")
+                          If ArgLabelsVal And JSONType(ArgLabelsVal) = #PB_JSON_Object
+                            ExtractJSONMap(ArgLabelsVal, IncomingLabels())
+                            ParsedLabels = #True
+                          EndIf
+                        EndIf
+                      EndIf
+                      FreeJSON(InnerJson)
+                    EndIf
+                  EndIf
+                EndIf
+              EndIf
+              
+              ; Zweites Callback-Argument (labels) bevorzugt zusätzlich auswerten
+              If Arg1Val
+                If JSONType(Arg1Val) = #PB_JSON_Object
+                  ExtractJSONMap(Arg1Val, IncomingLabels())
+                  ParsedLabels = #True
+                ElseIf JSONType(Arg1Val) = #PB_JSON_String
+                  InnerPayload = Trim(GetJSONString(Arg1Val))
+                  If InnerPayload <> ""
+                    InnerJson = ParseJSON(#PB_Any, InnerPayload)
+                    If InnerJson
+                      InnerRoot = JSONValue(InnerJson)
+                      If InnerRoot And JSONType(InnerRoot) = #PB_JSON_Object
+                        ExtractJSONMap(InnerRoot, IncomingLabels())
+                        ParsedLabels = #True
+                      EndIf
+                      FreeJSON(InnerJson)
+                    EndIf
+                  EndIf
+                EndIf
+              EndIf
+              
+            Case #PB_JSON_Object
+              ; Callback kann direkt ein Objekt liefern
+              ArgVisibleVal = GetJSONMember(RootVal, "visible")
+              If ArgVisibleVal And JSONType(ArgVisibleVal) = #PB_JSON_Array
+                ExtractJSONList(ArgVisibleVal, Params())
+                ParsedVisible = #True
+              EndIf
+              
+              ArgLabelsVal = GetJSONMember(RootVal, "labels")
               If ArgLabelsVal And JSONType(ArgLabelsVal) = #PB_JSON_Object
                 ExtractJSONMap(ArgLabelsVal, IncomingLabels())
+                ParsedLabels = #True
               EndIf
-            EndIf
-          EndIf
+              
+            Case #PB_JSON_String
+              ; Callback kann auch direkt einen JSON-String liefern
+              InnerPayload = Trim(GetJSONString(RootVal))
+              If InnerPayload <> ""
+                InnerJson = ParseJSON(#PB_Any, InnerPayload)
+                If InnerJson
+                  InnerRoot = JSONValue(InnerJson)
+                  If InnerRoot
+                    If JSONType(InnerRoot) = #PB_JSON_Array
+                      ExtractJSONList(InnerRoot, Params())
+                      ParsedVisible = #True
+                    ElseIf JSONType(InnerRoot) = #PB_JSON_Object
+                      ArgVisibleVal = GetJSONMember(InnerRoot, "visible")
+                      If ArgVisibleVal And JSONType(ArgVisibleVal) = #PB_JSON_Array
+                        ExtractJSONList(ArgVisibleVal, Params())
+                        ParsedVisible = #True
+                      EndIf
+                      
+                      ArgLabelsVal = GetJSONMember(InnerRoot, "labels")
+                      If ArgLabelsVal And JSONType(ArgLabelsVal) = #PB_JSON_Object
+                        ExtractJSONMap(ArgLabelsVal, IncomingLabels())
+                        ParsedLabels = #True
+                      EndIf
+                    EndIf
+                  EndIf
+                  FreeJSON(InnerJson)
+                EndIf
+              EndIf
+          EndSelect
         EndIf
         FreeJSON(Json)
       EndIf
@@ -1423,30 +1555,29 @@ Repeat
       If AreaConfigs(CurrentSettingsAreaID)\order <= 0
         AreaConfigs(CurrentSettingsAreaID)\order = 1
       EndIf
-      ClearList(AreaConfigs(CurrentSettingsAreaID)\visible_entities())
-      ForEach Params()
-        AddElement(AreaConfigs(CurrentSettingsAreaID)\visible_entities())
-        AreaConfigs(CurrentSettingsAreaID)\visible_entities() = Params()
-      Next
-      
-      ; Labels für Entitäten dieses Bereichs ersetzen
-      *FoundArea = 0
-      ForEach MyAreas()
-        If MyAreas()\id = CurrentSettingsAreaID
-          *FoundArea = @MyAreas()
-          Break
-        EndIf
-      Next
-      If *FoundArea
-        ForEach *FoundArea\all_entities()
-          DeleteMapElement(EntityLabels(), *FoundArea\all_entities()\id)
+      If ParsedVisible
+        ClearList(AreaConfigs(CurrentSettingsAreaID)\visible_entities())
+        ForEach Params()
+          If FindMapElement(ValidEntityIDs(), Params())
+            AddElement(AreaConfigs(CurrentSettingsAreaID)\visible_entities())
+            AreaConfigs(CurrentSettingsAreaID)\visible_entities() = Params()
+          EndIf
         Next
       EndIf
-      ForEach IncomingLabels()
-        If Trim(IncomingLabels()) <> ""
-          EntityLabels(MapKey(IncomingLabels())) = IncomingLabels()
+      
+      ; Labels für Entitäten dieses Bereichs ersetzen
+      If ParsedLabels
+        If *FoundArea
+          ForEach *FoundArea\all_entities()
+            DeleteMapElement(EntityLabels(), *FoundArea\all_entities()\id)
+          Next
         EndIf
-      Next
+        ForEach IncomingLabels()
+          If FindMapElement(ValidEntityIDs(), MapKey(IncomingLabels())) And Trim(IncomingLabels()) <> ""
+            EntityLabels(MapKey(IncomingLabels())) = IncomingLabels()
+          EndIf
+        Next
+      EndIf
       
       SaveConfig()
       

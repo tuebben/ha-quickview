@@ -2,7 +2,7 @@
   "areas": [
     {
       "id": "area_nord",
-      "name": "Kueche",
+      "name": "Kitchen",
       "temp_id": "sensor.kueche_temp",
       "temp_val": "20.9",
       "humid_id": "sensor.kueche_humidity",
@@ -10,7 +10,7 @@
       "all_entities": [
         {
           "id": "light.kueche_light_1",
-          "name": "Deckenleuchte Kueche",
+          "name": "Kitchen Ceiling Light",
           "state": "off",
           "unit": "",
           "brightness": "",
@@ -18,7 +18,7 @@
         },
         {
           "id": "sensor.kueche_power_1",
-          "name": "Steckdose Kueche Leistung",
+          "name": "Kitchen Smart Plug Power",
           "state": "312",
           "unit": "W",
           "brightness": "",
@@ -26,7 +26,7 @@
         },
         {
           "id": "sensor.kueche_air_1",
-          "name": "Luftqualitaet Kueche",
+          "name": "Kitchen Air Quality",
           "state": "980",
           "unit": "ppm",
           "brightness": "",
@@ -34,7 +34,7 @@
         },
         {
           "id": "sensor.kueche_temp_1",
-          "name": "Raumtemperatur Kueche",
+          "name": "Kitchen Room Temperature",
           "state": "20.9",
           "unit": "°C",
           "brightness": "",
@@ -42,7 +42,7 @@
         },
         {
           "id": "sensor.kueche_temp",
-          "name": "Temperatur Kueche",
+          "name": "Kitchen Temperature",
           "state": "20.9",
           "unit": "°C",
           "brightness": "",
@@ -50,7 +50,7 @@
         },
         {
           "id": "sensor.kueche_humidity",
-          "name": "Luftfeuchte Kueche",
+          "name": "Kitchen Humidity",
           "state": "54",
           "unit": "%",
           "brightness": "",
@@ -60,7 +60,7 @@
     },
     {
       "id": "area_west",
-      "name": "Wohnzimmer",
+      "name": "Living Room",
       "temp_id": "sensor.wohnzimmer_temp",
       "temp_val": "18.6",
       "humid_id": "sensor.wohnzimmer_humidity",
@@ -68,7 +68,7 @@
       "all_entities": [
         {
           "id": "light.wohnzimmer_light_1",
-          "name": "Deckenleuchte Wohnzimmer",
+          "name": "Living Room Ceiling Light",
           "state": "off",
           "unit": "",
           "brightness": "",
@@ -76,7 +76,7 @@
         },
         {
           "id": "sensor.wohnzimmer_power_2",
-          "name": "Steckdose Wohnzimmer Leistung",
+          "name": "Living Room Smart Plug Power",
           "state": "0.1",
           "unit": "W",
           "brightness": "",
@@ -84,7 +84,7 @@
         },
         {
           "id": "switch.wohnzimmer_switch_3",
-          "name": "Steckdose Wohnzimmer",
+          "name": "Living Room Smart Plug",
           "state": "off",
           "unit": "",
           "brightness": "",
@@ -92,7 +92,7 @@
         },
         {
           "id": "sensor.wohnzimmer_heating_4",
-          "name": "Heizung Wohnzimmer",
+          "name": "Living Room Heating",
           "state": "0.0",
           "unit": "W",
           "brightness": "",
@@ -100,7 +100,7 @@
         },
         {
           "id": "switch.wohnzimmer_heating_5",
-          "name": "Heizung Wohnzimmer",
+          "name": "Living Room Heating",
           "state": "off",
           "unit": "",
           "brightness": "",
@@ -108,7 +108,7 @@
         },
         {
           "id": "sensor.wohnzimmer_temp",
-          "name": "Temperatur Wohnzimmer",
+          "name": "Living Room Temperature",
           "state": "18.6",
           "unit": "°C",
           "brightness": "",
@@ -116,7 +116,7 @@
         },
         {
           "id": "sensor.wohnzimmer_humidity",
-          "name": "Luftfeuchte Wohnzimmer",
+          "name": "Living Room Humidity",
           "state": "51",
           "unit": "%",
           "brightness": "",
@@ -126,7 +126,7 @@
     },
     {
       "id": "area_mitte",
-      "name": "Hobbyraum",
+      "name": "Hobby Room",
       "temp_id": "sensor.hobbyraum_temp",
       "temp_val": "20.1",
       "humid_id": "sensor.hobbyraum_humidity",
@@ -134,7 +134,7 @@
       "all_entities": [
         {
           "id": "light.hobbyraum_light_1",
-          "name": "Deckenleuchte Hobbyraum",
+          "name": "Hobby Room Ceiling Light",
           "state": "off",
           "unit": "",
           "brightness": "",
@@ -142,7 +142,7 @@
         },
         {
           "id": "switch.hobbyraum_switch_2",
-          "name": "Steckdose Hobbyraum",
+          "name": "Hobby Room Smart Plug",
           "state": "on",
           "unit": "",
           "brightness": "",
@@ -150,7 +150,7 @@
         },
         {
           "id": "sensor.hobbyraum_power_2",
-          "name": "Steckdose Hobbyraum Leistung",
+          "name": "Hobby Room Smart Plug Power",
           "state": "0",
           "unit": "W",
           "brightness": "",
@@ -158,7 +158,7 @@
         },
         {
           "id": "sensor.hobbyraum_voltage_2",
-          "name": "Steckdose Hobbyraum Spannung",
+          "name": "Hobby Room Smart Plug Voltage",
           "state": "228",
           "unit": "V",
           "brightness": "",
@@ -166,7 +166,7 @@
         },
         {
           "id": "sensor.hobbyraum_energy_2",
-          "name": "Steckdose Hobbyraum Energie",
+          "name": "Hobby Room Smart Plug Energy",
           "state": "5.17",
           "unit": "kWh",
           "brightness": "",
@@ -174,7 +174,7 @@
         },
         {
           "id": "sensor.hobbyraum_device_power_2",
-          "name": "Steckdose Hobbyraum Leistung",
+          "name": "Hobby Room Smart Plug Power",
           "state": "0.40",
           "unit": "W",
           "brightness": "",
@@ -182,7 +182,7 @@
         },
         {
           "id": "sensor.hobbyraum_device_energy_2",
-          "name": "Steckdose Hobbyraum Geraeteenergie",
+          "name": "Hobby Room Smart Plug Device Energy",
           "state": "0.281",
           "unit": "kWh",
           "brightness": "",
@@ -190,7 +190,7 @@
         },
         {
           "id": "sensor.hobbyraum_temp",
-          "name": "Temperatur Hobbyraum",
+          "name": "Hobby Room Temperature",
           "state": "20.1",
           "unit": "°C",
           "brightness": "",
@@ -198,7 +198,7 @@
         },
         {
           "id": "sensor.hobbyraum_humidity",
-          "name": "Luftfeuchte Hobbyraum",
+          "name": "Hobby Room Humidity",
           "state": "57",
           "unit": "%",
           "brightness": "",
@@ -208,7 +208,7 @@
     },
     {
       "id": "area_bad",
-      "name": "Badezimmer",
+      "name": "Bathroom",
       "temp_id": "sensor.badezimmer_temp",
       "temp_val": "21.3",
       "humid_id": "sensor.badezimmer_humidity",
@@ -216,7 +216,7 @@
       "all_entities": [
         {
           "id": "sensor.badezimmer_temp",
-          "name": "Temperatur Badezimmer",
+          "name": "Bathroom Temperature",
           "state": "21.3",
           "unit": "°C",
           "brightness": "",
@@ -224,7 +224,7 @@
         },
         {
           "id": "sensor.badezimmer_humidity",
-          "name": "Luftfeuchte Badezimmer",
+          "name": "Bathroom Humidity",
           "state": "68",
           "unit": "%",
           "brightness": "",
@@ -234,7 +234,7 @@
     },
     {
       "id": "area_kind1",
-      "name": "Arbeitszimmer",
+      "name": "Office",
       "temp_id": "sensor.arbeitszimmer_temp",
       "temp_val": "18.9",
       "humid_id": "sensor.arbeitszimmer_humidity",
@@ -242,7 +242,7 @@
       "all_entities": [
         {
           "id": "sensor.arbeitszimmer_temp",
-          "name": "Temperatur Arbeitszimmer",
+          "name": "Office Temperature",
           "state": "18.9",
           "unit": "°C",
           "brightness": "",
@@ -250,7 +250,7 @@
         },
         {
           "id": "sensor.arbeitszimmer_humidity",
-          "name": "Luftfeuchte Arbeitszimmer",
+          "name": "Office Humidity",
           "state": "61",
           "unit": "%",
           "brightness": "",
@@ -260,7 +260,7 @@
     },
     {
       "id": "area_kind2",
-      "name": "Gaestezimmer",
+      "name": "Guest Room",
       "temp_id": "sensor.gaestezimmer_temp",
       "temp_val": "18.2",
       "humid_id": "sensor.gaestezimmer_humidity",
@@ -268,7 +268,7 @@
       "all_entities": [
         {
           "id": "sensor.gaestezimmer_temp",
-          "name": "Temperatur Gaestezimmer",
+          "name": "Guest Room Temperature",
           "state": "18.2",
           "unit": "°C",
           "brightness": "",
@@ -276,7 +276,7 @@
         },
         {
           "id": "sensor.gaestezimmer_humidity",
-          "name": "Luftfeuchte Gaestezimmer",
+          "name": "Guest Room Humidity",
           "state": "58",
           "unit": "%",
           "brightness": "",
@@ -286,7 +286,7 @@
     },
     {
       "id": "area_eingang",
-      "name": "Eingangsbereich",
+      "name": "Entrance",
       "temp_id": "",
       "temp_val": "",
       "humid_id": "",
@@ -295,7 +295,7 @@
     },
     {
       "id": "area_flur",
-      "name": "Flur",
+      "name": "Hallway",
       "temp_id": "",
       "temp_val": "",
       "humid_id": "",
@@ -303,7 +303,7 @@
       "all_entities": [
         {
           "id": "light.flur_light_1",
-          "name": "Flurlicht",
+          "name": "Hallway Light",
           "state": "off",
           "unit": "",
           "brightness": "",
@@ -313,7 +313,7 @@
     },
     {
       "id": "area_werkstatt",
-      "name": "Keller",
+      "name": "Basement",
       "temp_id": "",
       "temp_val": "",
       "humid_id": "",
@@ -321,7 +321,7 @@
       "all_entities": [
         {
           "id": "light.keller_light_1",
-          "name": "Deckenleuchte Keller",
+          "name": "Basement Ceiling Light",
           "state": "off",
           "unit": "",
           "brightness": "",
@@ -329,7 +329,7 @@
         },
         {
           "id": "sensor.keller_power_1",
-          "name": "Leuchte G1 Last",
+          "name": "Light G1 Load",
           "state": "0.08",
           "unit": "W",
           "brightness": "",
@@ -339,7 +339,7 @@
     },
     {
       "id": "area_technik",
-      "name": "Hauswirtschaftsraum",
+      "name": "Utility Room",
       "temp_id": "sensor.hauswirtschaftsraum_temp",
       "temp_val": "19.7",
       "humid_id": "sensor.hauswirtschaftsraum_humidity",
@@ -347,7 +347,7 @@
       "all_entities": [
         {
           "id": "sensor.hauswirtschaftsraum_temp",
-          "name": "Temperatur Hauswirtschaftsraum",
+          "name": "Utility Room Temperature",
           "state": "19.7",
           "unit": "°C",
           "brightness": "",
@@ -355,7 +355,7 @@
         },
         {
           "id": "sensor.hauswirtschaftsraum_humidity",
-          "name": "Luftfeuchte Hauswirtschaftsraum",
+          "name": "Utility Room Humidity",
           "state": "49",
           "unit": "%",
           "brightness": "",
@@ -365,7 +365,7 @@
     },
     {
       "id": "area_essen",
-      "name": "Esszimmer",
+      "name": "Dining Room",
       "temp_id": "sensor.esszimmer_temp",
       "temp_val": "19.1",
       "humid_id": "sensor.esszimmer_humidity",
@@ -373,7 +373,7 @@
       "all_entities": [
         {
           "id": "sensor.esszimmer_temp",
-          "name": "Temperatur Esszimmer",
+          "name": "Dining Room Temperature",
           "state": "19.1",
           "unit": "°C",
           "brightness": "",
@@ -381,7 +381,7 @@
         },
         {
           "id": "sensor.esszimmer_humidity",
-          "name": "Luftfeuchte Esszimmer",
+          "name": "Dining Room Humidity",
           "state": "55",
           "unit": "%",
           "brightness": "",
@@ -391,7 +391,7 @@
     },
     {
       "id": "area_sued",
-      "name": "Schlafzimmer",
+      "name": "Bedroom",
       "temp_id": "sensor.schlafzimmer_temp",
       "temp_val": "18.8",
       "humid_id": "sensor.schlafzimmer_humidity",
@@ -399,7 +399,7 @@
       "all_entities": [
         {
           "id": "sensor.schlafzimmer_temp",
-          "name": "Temperatur Schlafzimmer",
+          "name": "Bedroom Temperature",
           "state": "18.8",
           "unit": "°C",
           "brightness": "",
@@ -407,7 +407,7 @@
         },
         {
           "id": "sensor.schlafzimmer_humidity",
-          "name": "Luftfeuchte Schlafzimmer",
+          "name": "Bedroom Humidity",
           "state": "56",
           "unit": "%",
           "brightness": "",

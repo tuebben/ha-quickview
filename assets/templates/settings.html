@@ -415,7 +415,7 @@
         const v = (e.alias || '').trim();
         if (v) labels[e.id] = v;
       });
-      if (window.OnJS_SaveSettings) window.OnJS_SaveSettings({ visible, labels });
+      if (window.OnJS_SaveSettings) window.OnJS_SaveSettings(visible, labels);
     }
 
     window.addEventListener('load', () => {
