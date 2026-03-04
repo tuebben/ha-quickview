@@ -45,5 +45,10 @@
   "MSG_INVALID_URL_TITLE": "URL no válida",
   "MSG_INVALID_URL_BODY": "Introduce la URL con http:// o https://.",
   "MSG_MISSING_FIELDS_TITLE": "Faltan datos",
-  "MSG_MISSING_FIELDS_BODY": "Introduce la URL y el token de acceso."
+  "MSG_MISSING_FIELDS_BODY": "Introduce la URL y el token de acceso.",
+  "TXT_OPEN": "Abierto",
+  "TXT_CLOSED": "Cerrado",
+  "TXT_DETECTED": "Detectado",
+  "TXT_CLEAR": "Sin detección",
+  "TXT_LABEL_PLACEHOLDER": "Etiqueta personalizada (opcional)"
 }

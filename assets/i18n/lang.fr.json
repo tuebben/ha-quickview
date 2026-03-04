@@ -45,5 +45,10 @@
   "MSG_INVALID_URL_TITLE": "URL invalide",
   "MSG_INVALID_URL_BODY": "Veuillez indiquer l'URL avec http:// ou https://.",
   "MSG_MISSING_FIELDS_TITLE": "Informations manquantes",
-  "MSG_MISSING_FIELDS_BODY": "Veuillez saisir l'URL et le jeton d'accès."
+  "MSG_MISSING_FIELDS_BODY": "Veuillez saisir l'URL et le jeton d'accès.",
+  "TXT_OPEN": "Ouvert",
+  "TXT_CLOSED": "Fermé",
+  "TXT_DETECTED": "Détecté",
+  "TXT_CLEAR": "Aucun",
+  "TXT_LABEL_PLACEHOLDER": "Libellé personnalisé (facultatif)"
 }

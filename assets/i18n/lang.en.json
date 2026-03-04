@@ -45,5 +45,10 @@
   "MSG_INVALID_URL_TITLE": "Invalid URL",
   "MSG_INVALID_URL_BODY": "Please provide the URL with http:// or https://.",
   "MSG_MISSING_FIELDS_TITLE": "Missing Information",
-  "MSG_MISSING_FIELDS_BODY": "Please enter URL and access token."
+  "MSG_MISSING_FIELDS_BODY": "Please enter URL and access token.",
+  "TXT_OPEN": "Open",
+  "TXT_CLOSED": "Closed",
+  "TXT_DETECTED": "Detected",
+  "TXT_CLEAR": "Clear",
+  "TXT_LABEL_PLACEHOLDER": "Custom label (optional)"
 }

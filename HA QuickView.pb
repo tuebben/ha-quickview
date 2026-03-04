@@ -48,6 +48,7 @@ Structure HA_Entity
   state.s
   domain.s
   device_class.s
+  icon.s
   unit.s
   brightness.s
 EndStructure
@@ -97,6 +98,7 @@ Global ToggleResultMessage.s = ""
 Global NewMap I18N.s()
 Global CurrentLanguage.s = "en"
 Global PreferredLanguage.s = "en" ; "", "en", "de", "fr", "es" (leer = Auto-Erkennung)
+Global NewMap EntityLabels.s()
 
 ; --- Deklarationen ---
 Declare RefreshGUI(ForceReload = #False)
@@ -399,6 +401,7 @@ Procedure.i HA_ListAreas(List OutputList.HA_Area())
   Protected RootVal = JSONValue(Json)
   NewMap StateByEntity.s()
   NewMap ClassByEntity.s()
+  NewMap IconByEntity.s()
   NewMap NameByEntity.s()
   NewMap UnitByEntity.s()
   NewMap BrightnessByEntity.s()
@@ -422,11 +425,13 @@ Procedure.i HA_ListAreas(List OutputList.HA_Area())
       
       Protected nm.s = id
       Protected cl.s = ""
+      Protected ic.s = ""
       Protected unit.s = ""
       Protected bright.s = ""
       If attr And JSONType(attr) = #PB_JSON_Object
         nm = GetJSONStringSafe(attr, "friendly_name")
         cl = GetJSONStringSafe(attr, "device_class")
+        ic = GetJSONStringSafe(attr, "icon")
         unit = GetJSONStringSafe(attr, "unit_of_measurement")
         bright = GetJSONStringSafe(attr, "brightness_pct")
         If bright = ""
@@ -443,6 +448,7 @@ Procedure.i HA_ListAreas(List OutputList.HA_Area())
       If id <> ""
         StateByEntity(id) = val
         ClassByEntity(id) = cl
+        IconByEntity(id) = ic
         NameByEntity(id) = nm
         UnitByEntity(id) = unit
         BrightnessByEntity(id) = bright
@@ -464,6 +470,7 @@ Procedure.i HA_ListAreas(List OutputList.HA_Area())
       If id = "" : Continue : EndIf
       OutputList()\all_entities()\state = ""
       OutputList()\all_entities()\device_class = ""
+      OutputList()\all_entities()\icon = ""
       OutputList()\all_entities()\unit = ""
       OutputList()\all_entities()\brightness = ""
       OutputList()\all_entities()\domain = StringField(id, 1, ".")
@@ -473,6 +480,9 @@ Procedure.i HA_ListAreas(List OutputList.HA_Area())
       EndIf
       If FindMapElement(StateByEntity(), id)
         OutputList()\all_entities()\state = StateByEntity()
+      EndIf
+      If FindMapElement(IconByEntity(), id)
+        OutputList()\all_entities()\icon = IconByEntity()
       EndIf
       If FindMapElement(UnitByEntity(), id)
         OutputList()\all_entities()\unit = UnitByEntity()
@@ -910,7 +920,7 @@ EndProcedure
 
 Procedure SaveConfig()
   Protected Json = CreateJSON(#PB_Any)
-  Protected Root.i, jAreas.i
+  Protected Root.i, jAreas.i, jLabels.i
   If Json
     Root = JSONValue(Json)
     SetJSONObject(Root)
@@ -918,13 +928,15 @@ Procedure SaveConfig()
     SetJSONString(AddJSONMember(Root, "ha_base_url"), HA_BASE_URL)
     jAreas = AddJSONMember(Root, "areas")
     InsertJSONMap(jAreas, AreaConfigs())
+    jLabels = AddJSONMember(Root, "entity_labels")
+    InsertJSONMap(jLabels, EntityLabels())
     SaveJSON(Json, GetConfigFilePath(), #PB_JSON_PrettyPrint)
     FreeJSON(Json)
   EndIf
 EndProcedure
 
 Procedure LoadConfig()
-  Protected Root.i, vToken.i, vBase.i, vAreas.i
+  Protected Root.i, vToken.i, vBase.i, vAreas.i, vLabels.i
   Protected Json = LoadJSON(#PB_Any, GetConfigFilePath())
   If Json
     Root = JSONValue(Json)
@@ -945,6 +957,12 @@ Procedure LoadConfig()
       Else
         ; Legacy-Format: Root selbst war die Area-Map
         ExtractJSONMap(Root, AreaConfigs())
+      EndIf
+      
+      vLabels = GetJSONMember(Root, "entity_labels")
+      ClearMap(EntityLabels())
+      If vLabels And JSONType(vLabels) = #PB_JSON_Object
+        ExtractJSONMap(vLabels, EntityLabels())
       EndIf
     EndIf
     FreeJSON(Json)
@@ -1298,6 +1316,9 @@ Procedure RefreshGUI(ForceReload = #False)
     Protected jConfigs = AddJSONMember(Root, "configs")
     InsertJSONMap(jConfigs, AreaConfigs())
     
+    Protected jEntityLabels = AddJSONMember(Root, "entity_labels")
+    InsertJSONMap(jEntityLabels, EntityLabels())
+    
     WebViewExecuteScript(#Web_Main, "updateUI(" + ComposeJSON(Json) + ")")
     FreeJSON(Json)
   EndIf
@@ -1309,10 +1330,11 @@ EndProcedure
 Define Event, Window, i, TargetAreaID_Local.s
 Define NewList Params.s()
 Define *FoundArea.HA_Area
-Define Json, RootVal, Arg0Val, jAll, jEnt, jVisible, Script.s
+Define Json, RootVal, Arg0Val, ArgVisibleVal, ArgLabelsVal, jAll, jEnt, jVisible, jLabels, Script.s
 Define PayloadCopy.s, ErrorCopy.s
 Define ToggleDomain.s
 Define DesignAction.s, DesignAreaID.s, VisibleFlag.i, OrderPos.i, Arg1Val, Arg2Val
+Define NewMap IncomingLabels.s()
 
 InitLanguage()
 
@@ -1367,13 +1389,28 @@ Repeat
   ElseIf Event = #Event_SaveSettings
     If CurrentSettingsAreaID <> ""
       ClearList(Params())
+      ClearMap(IncomingLabels())
       Json = ParseJSON(#PB_Any, SettingsDataBuffer)
       If Json
         RootVal = JSONValue(Json)
         If RootVal And JSONType(RootVal) = #PB_JSON_Array And JSONArraySize(RootVal) > 0
           Arg0Val = GetJSONElement(RootVal, 0)
-          If Arg0Val And JSONType(Arg0Val) = #PB_JSON_Array
-            ExtractJSONList(Arg0Val, Params())
+          If Arg0Val
+            If JSONType(Arg0Val) = #PB_JSON_Array
+              ; Legacy-Payload: direktes String-Array
+              ExtractJSONList(Arg0Val, Params())
+            ElseIf JSONType(Arg0Val) = #PB_JSON_Object
+              ; Neues Payload: { visible: [...], labels: {...} }
+              ArgVisibleVal = GetJSONMember(Arg0Val, "visible")
+              If ArgVisibleVal And JSONType(ArgVisibleVal) = #PB_JSON_Array
+                ExtractJSONList(ArgVisibleVal, Params())
+              EndIf
+              
+              ArgLabelsVal = GetJSONMember(Arg0Val, "labels")
+              If ArgLabelsVal And JSONType(ArgLabelsVal) = #PB_JSON_Object
+                ExtractJSONMap(ArgLabelsVal, IncomingLabels())
+              EndIf
+            EndIf
           EndIf
         EndIf
         FreeJSON(Json)
@@ -1391,6 +1428,26 @@ Repeat
         AddElement(AreaConfigs(CurrentSettingsAreaID)\visible_entities())
         AreaConfigs(CurrentSettingsAreaID)\visible_entities() = Params()
       Next
+      
+      ; Labels für Entitäten dieses Bereichs ersetzen
+      *FoundArea = 0
+      ForEach MyAreas()
+        If MyAreas()\id = CurrentSettingsAreaID
+          *FoundArea = @MyAreas()
+          Break
+        EndIf
+      Next
+      If *FoundArea
+        ForEach *FoundArea\all_entities()
+          DeleteMapElement(EntityLabels(), *FoundArea\all_entities()\id)
+        Next
+      EndIf
+      ForEach IncomingLabels()
+        If Trim(IncomingLabels()) <> ""
+          EntityLabels(MapKey(IncomingLabels())) = IncomingLabels()
+        EndIf
+      Next
+      
       SaveConfig()
       
       CurrentSettingsAreaID = ""
@@ -1445,6 +1502,14 @@ Repeat
               SetJSONString(AddJSONElement(jVisible), AreaConfigs()\visible_entities())
             Next
           EndIf
+          
+          jLabels = AddJSONMember(JSONValue(Json), "labels")
+          SetJSONObject(jLabels)
+          ForEach *FoundArea\all_entities()
+            If FindMapElement(EntityLabels(), *FoundArea\all_entities()\id) And Trim(EntityLabels()) <> ""
+              SetJSONString(AddJSONMember(jLabels, *FoundArea\all_entities()\id), EntityLabels())
+            EndIf
+          Next
           
           Script = "init(" + ComposeJSON(Json) + ")"
           WebViewExecuteScript(#Web_Settings, Script)

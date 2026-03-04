@@ -45,5 +45,10 @@
   "MSG_INVALID_URL_TITLE": "Ungültige URL",
   "MSG_INVALID_URL_BODY": "Bitte die URL mit http:// oder https:// angeben.",
   "MSG_MISSING_FIELDS_TITLE": "Fehlende Angaben",
-  "MSG_MISSING_FIELDS_BODY": "Bitte URL und Access Token eingeben."
+  "MSG_MISSING_FIELDS_BODY": "Bitte URL und Access Token eingeben.",
+  "TXT_OPEN": "Geöffnet",
+  "TXT_CLOSED": "Geschlossen",
+  "TXT_DETECTED": "Erkannt",
+  "TXT_CLEAR": "Klar",
+  "TXT_LABEL_PLACEHOLDER": "Eigener Anzeigetext (optional)"
 }
